@@ -28,9 +28,7 @@ import CommentList from "../../molecules/commentList";
 
 import io from "socket.io-client";
 
-
 function Feed(props) {
-
   // console.log("running feed")
 
   const { user, feed, socket } = props;
@@ -41,29 +39,29 @@ function Feed(props) {
   const [currComment, setCurrComment] = useState("");
 
   const [postComments, setPostComments] = useState([]);
-  console.log("hello: ", postComments)
-  async function fetchComments() {                            //
+  console.log("hello: ", postComments);
+  async function fetchComments() {
+    //
     let postId = feed._id;
     let temp = await getComment(postId);
     // console.log("got comments: ", temp.comments)
     setPostComments(temp.comments);
   }
 
+  useEffect(function () {
+    console.log("running use effect");
+    fetchComments();
+    socket.emit("join room", feed._id);
+
+    // Join feed room after all comments are loaded to the UI
+  }, []);
+
   useEffect(
     function () {
-      console.log("running use effect")
-      fetchComments();
-      socket.emit("join room", feed._id);
-      
-      // Join feed room after all comments are loaded to the UI
+      socket.on("new comment", addComment);
     },
-    []
-    );
-    
-    useEffect(function(){
-    socket.on("new comment", addComment);
-
-  }, [postComments])
+    [postComments]
+  );
 
   const addComment = (comment) => {
     if (comment.feedId == feed._id) {
@@ -90,18 +88,14 @@ function Feed(props) {
     setCommentSendLoading(true);
 
     let saved = await saveComment(commentObj);
-    let comment = saved.comment
+    let comment = saved.comment;
     // console.log("checking :P ", comment)
     let socketComment = comment;
-    socketComment.postedBy = {userName: user.userName}
+    socketComment.postedBy = { userName: user.userName };
     socket.emit("send comment", socketComment);
     setCurrComment("");
     setCommentSendLoading(false);
   };
-
-  
-
-  
 
   function handleListItemClick(event) {
     handleClickOpen();
