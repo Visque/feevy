@@ -1,60 +1,54 @@
-import fakeApi from "../utils/fakeApi"
-
 const url = "http://localhost:5000/auth";
 
 export async function saveUser(userObj){
 
-    return await fakeApi(function (res, rej) {
-
-        fetch(`${url}/user`, {
-            method: 'POST',
-            headers: {'Content-type': "application/json"},
-            body: JSON.stringify(userObj)
-        })
-          .then((response) => {
-              console.log("mssg: ", response.status);
-              return response.json();
-          })
-          .then((data) => {
-            res(data)
-          });
-
-    });
+    let response = await fetch(`${url}/user`, {
+        method: 'POST',
+        headers: {'Content-type': "application/json"},
+        body: JSON.stringify(userObj)
+    })
+    console.log("mssg: ", response.status);
+    let data = await response.json()
+    return data;
 
 }
 
 export async function signin(userObj){
-    // console.log("check signin: ", `${url}/signin`);
-    return await fakeApi(function(res, rej){
 
-        fetch(`${url}/signin`, {
-            method: 'POST',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify(userObj)
-        })
-        .then((response) => {
-            return response.json();
-        })
-        .then(data => {
-            res(data);
-        })
-
-        // console.log("yay signed in :)")
+    let response = await fetch(`${url}/signin`, {
+        method: 'POST',
+        headers: {'Content-type': 'application/json'},
+        body: JSON.stringify(userObj)
     })
+
+    let data = await response.json()
+    return data
+    
 }
 
 export async function signout(userObj){
 
-    return await fakeApi(function(res, rej){
-        fetch(`${url}/signout`)
-        .then(response => {
-            if(response.status == 200){
-                localStorage.setItem("token", "")
-                return response.json()
-            }
-        })
-        .then(data => {
-            res(data)
-        })
-    })
+    let response = await fetch(`${url}/signout`)
+    
+    let data = await response.json()
+    
+    if(response.status == 200){
+        localStorage.setItem("token", "")
+        return data
+    }
+    else{
+        return data
+    }
+    
+    // return await fakeApi(function(res, rej){
+        // .then(response => {
+        //     if(response.status == 200){
+        //         localStorage.setItem("token", "")
+        //         return response.json()
+        //     }
+        // })
+        // .then(data => {
+        //     res(data)
+        // })
+    // })
 }

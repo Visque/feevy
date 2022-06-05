@@ -16,8 +16,12 @@ const PORT = 5000;
 const http = require("http");
 const server = http.createServer(app);
 
-const io = require("socket.io")(server);
-
+const io = require("socket.io")(server, {
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST"],
+  },
+});
 module.exports = io;
 
 // Middlewares
@@ -33,10 +37,12 @@ app.use(
 // Route imports
 const auth = require("./routes/auth");
 const post = require("./routes/post");
+const comment = require("./routes/comment");
 
 // Route middlewares
 app.use("/auth", auth);
 app.use("/post", post);
+app.use("/comment", comment);
 
 server.listen(PORT, () => {
   console.log("servers up :)");

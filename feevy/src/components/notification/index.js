@@ -1,6 +1,6 @@
-import React from "react";
+import React, { memo } from "react";
 
-export default function Notification() {
+function Notification() {
   let content = (
       <div>notifications</div>
   );
@@ -11,3 +11,5 @@ export default function Notification() {
     </>
   );
 }
+
+export default memo(Notification)

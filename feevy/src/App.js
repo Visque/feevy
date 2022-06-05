@@ -5,16 +5,27 @@ import React, { useState, useEffect, memo } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import MiniDrawer from "./components/drawer";
+import MiniDrawer from "./components/UI/organisms/drawer";
 
-import Auth from "./pages/auth/index.js";
-import Home from "./pages/home";
+import Auth from "./components/pages/auth/index.js";
+import Home from "./components/pages/home";
+
+import io from "socket.io-client";
 
 let user = {};
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState();
   const navigate = useNavigate();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // console.log("main called :): ", isLoggedIn)
+
+  const [socket, setSocket] = useState(null);
+
+  useEffect(function () {
+    console.log("runing auth effect");
+    setAuth();
+  }, []);
+
 
   function setAuth(){
     let token = localStorage.getItem("token") || null
@@ -34,19 +45,13 @@ function App() {
     }
   }
 
-  useEffect(function(){
-    setAuth();
-  }, [])
-
-
   // const isLoggedIn = false;
   let content;
-  if (isLoggedIn) {
+  if (isLoggedIn == true) {
     content = (
       <MiniDrawer user={user} setAuth={setAuth}>
         <Routes>
           <Route path="/home" element={<Home user={user} />} />
-          <Route path="/k" element={<h1>llowdsa </h1>} />
         </Routes>
       </MiniDrawer>
     );
