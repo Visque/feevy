@@ -38,8 +38,14 @@ function Feed(props) {
   const [commentSendLoading, setCommentSendLoading] = useState(false);
   const [currComment, setCurrComment] = useState("");
 
-  const [postComments, setPostComments] = useState([]);
-  console.log("hello: ", postComments);
+  const [postComments, setPostComments] = useState(feed.comments || []);
+  // console.log("hello: ", postComments);
+
+
+  if(feed.title == "post15"){
+    console.log("new post: ", postComments)
+  }
+
   async function fetchComments() {
     //
     let postId = feed._id;
@@ -48,24 +54,29 @@ function Feed(props) {
     setPostComments(temp.comments);
   }
 
-  useEffect(function () {
-    console.log("running use effect");
-    fetchComments();
-    socket.emit("join room", feed._id);
+  useEffect(
+    function () {
+      // fetchComments();
+      // console.log("running use effect");
+      
 
-    // Join feed room after all comments are loaded to the UI
-  }, []);
+      // Join feed room after all comments are loaded to the UI
+    },
+    []
+  );
 
   useEffect(
     function () {
+      console.log("running use effect for new comment");
       socket.on("new comment", addComment);
+      socket.emit("join room", feed._id);
     },
     [postComments]
   );
 
   const addComment = (comment) => {
     if (comment.feedId == feed._id) {
-      // console.log("Adding a comment through socket: ", comment, " : ", postComments);
+      console.log("Adding a comment through socket: ", comment, " : ", postComments);
       setPostComments([comment, ...postComments]);
     }
   };

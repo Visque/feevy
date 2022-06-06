@@ -26,13 +26,13 @@ io.on("connection", (socket) => {
     });
 
     socket.on("send comment", (comment) => {
-      console.log(`posted feed-${comment.feedId}`);
+      // console.log(`posted feed-${comment.feedId}`);
       io.to(`feed-${comment.feedId}`).emit("new comment", comment);
     });
 })
 
 app.route("/").post(async (req, res) => {
-    console.log("saving post: ", req.body)
+    // console.log("saving post: ", req.body)
     let savedPost = await savePost(req.body)
     if(!savedPost){
         res.status(400).json({ err: "Something went wrong while saving post" })
@@ -42,26 +42,56 @@ app.route("/").post(async (req, res) => {
     res.status(200).json({mssg: "Post Saved", post: JSON.stringify(savedPost)})
 })
 .get(async (req, res) => {
-    console.log("quers: ", req.query)
+    // console.log("quers: ", req.query)
     let userId = req.query.userId
     userId = mongoose.Types.ObjectId(userId)
     
     // let feeds = await userFeedPosts(userId)
     let feeds = await allFeeds()
+
+    feeds = await handleGetComments(feeds)
     
     res.status(200).json({mssg: "Retrieved user Feeds", feeds: JSON.stringify(feeds)})
 })
 
 // Functions
+
+async function handleGetComments(feeds){
+  // feeds.map(async (feed) => {                                  // await didnt work here :(
+  //   let comments = await getPostComments(feed._id);
+  //   feed.comments = comments;
+  //   console.log("assigned");
+
+  //   return feed;
+  // });
+
+  for (let feed of feeds){
+    let comments = await getPostComments(feed._id);
+
+    comments = comments.map((comment) => {
+      if (comment.postedBy) {
+        comment.postedBy = comment.postedBy[0];
+      }
+      return comment;
+    });
+
+    feed.comments = comments;
+  }
+
+  return feeds
+}
+
 async function savePost(post){
     return await postModel.create(post)
 }
 
 async function getPostComments(feedId) {
+  
+
   return await commentModel.aggregate([
     {
       $match: {
-        feedId: mongoose.Types.ObjectId(feedId),
+        feedId: feedId,
       },
     },
     {
@@ -78,6 +108,8 @@ async function getPostComments(feedId) {
       },
     },
   ]);
+
+  // return await commentModel.find({ feedId: feedId });
 }
 
 async function allFeeds(){

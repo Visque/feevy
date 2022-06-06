@@ -128,4 +128,6 @@ body{
   --primary-red: #ff0000;
   --secondary-red: #ffA000;
   --light-red: rgb(255, 167, 167);
+
+  --dark-grey: #292A2D
 }

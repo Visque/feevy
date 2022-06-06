@@ -9,8 +9,8 @@ import HomeTemp from "../../templates/home"; // template
 
 import { getPosts } from "../../../api/post";
 
-import io from 'socket.io-client'
-const socket = io.connect("http://localhost:5000")
+import io from "socket.io-client";
+const socket = io.connect("http://localhost:5000");
 
 export { socket };
 
@@ -21,6 +21,13 @@ function Home(props) {
 
   const [postsLoading, setPostsLoading] = useState(true);
   const [allPosts, setAllPosts] = useState([]);
+
+  useEffect(
+    function () {
+      socket.on("new post", addPost);
+    },
+    [allPosts]
+  );
 
   useEffect(function () {
     async function fetchPosts() {
@@ -37,21 +44,24 @@ function Home(props) {
     navigate("/home");
   }, []);
 
-  const addPost = (post) => {
-    console.log(
-      "yay adding a post: ",typeof post
-    );
+  
 
+  const addPost = (post) => {
+    console.log("yay adding a post: ", post, " \n 0_0 \n", allPosts[0]);
+    post.comments = []
     setAllPosts([post, ...allPosts]);
   };
-
-  socket.on("new post", addPost);
 
   return (
     <>
       <HomeTemp>
         <CreatePostBtn socket={socket} user={user} />
-        <PostList socket={socket} user={user} loading={postsLoading} feeds={allPosts} />
+        <PostList
+          socket={socket}
+          user={user}
+          loading={postsLoading}
+          feeds={allPosts}
+        />
       </HomeTemp>
     </>
   );

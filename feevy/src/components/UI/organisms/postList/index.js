@@ -39,6 +39,9 @@ function PostList(props) {
           aria-label="main mailbox folders"
         >
           {feeds.map((feed, idx) => {
+
+            console.log(`feed comment ${feed.title}: `, feed.comments)
+
             return (
               <Feed
                 socket={socket}

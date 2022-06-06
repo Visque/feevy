@@ -1,7 +1,6 @@
 const url = "http://localhost:5000/comment";
 
 export async function saveComment(userComment) {
-  console.log("logging comment: ", userComment);
 
   let response = await fetch(`${url}`, {
     method: "POST",

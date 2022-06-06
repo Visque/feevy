@@ -16,7 +16,6 @@ const commentModel = require("../database/models/comments");
 
 
 app.route("/").post(async (req, res) => {
-    console.log("logging comment post: ", req.body)
     let commentObj = req.body
     
     let comment = await saveComment(commentObj);
