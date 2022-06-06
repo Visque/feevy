@@ -27,6 +27,7 @@ import { Typography } from "@mui/material";
 import CommentList from "../../molecules/commentList";
 
 import io from "socket.io-client";
+import { set } from "mongoose";
 
 function Feed(props) {
   // console.log("running feed")
@@ -38,32 +39,33 @@ function Feed(props) {
   const [commentSendLoading, setCommentSendLoading] = useState(false);
   const [currComment, setCurrComment] = useState("");
 
-  const [postComments, setPostComments] = useState(feed.comments || []);
+  const [postComments, setPostComments] = useState(feed.comments || [])
+
   // console.log("hello: ", postComments);
 
 
-  if(feed.title == "post15"){
-    console.log("new post: ", postComments)
-  }
+  // if(feed.title == "post15"){
+  //   console.log("new post: ", postComments)
+  // }
 
-  async function fetchComments() {
-    //
-    let postId = feed._id;
-    let temp = await getComment(postId);
-    // console.log("got comments: ", temp.comments)
-    setPostComments(temp.comments);
-  }
+  // async function fetchComments() {
+  //   //
+  //   let postId = feed._id;
+  //   let temp = await getComment(postId);
+  //   // console.log("got comments: ", temp.comments)
+  //   setPostComments(temp.comments);
+  // }
 
-  useEffect(
-    function () {
-      // fetchComments();
-      // console.log("running use effect");
+  // useEffect(
+  //   function () {
+  //     // fetchComments();
+  //     // console.log("running use effect");
       
 
-      // Join feed room after all comments are loaded to the UI
-    },
-    []
-  );
+  //     // Join feed room after all comments are loaded to the UI
+  //   },
+  //   []
+  // );
 
   useEffect(
     function () {
@@ -71,13 +73,14 @@ function Feed(props) {
       socket.on("new comment", addComment);
       socket.emit("join room", feed._id);
     },
-    [postComments]
+    [feed]
   );
 
   const addComment = (comment) => {
     if (comment.feedId == feed._id) {
-      console.log("Adding a comment through socket: ", comment, " : ", postComments);
-      setPostComments([comment, ...postComments]);
+      console.log("Adding a comment through socket: ", comment);
+      feed.comments = [comment, ...(feed.comments)]
+      setPostComments([comment, ...postComments])
     }
   };
 
@@ -189,7 +192,7 @@ function Feed(props) {
                 Comment
               </LoadingButton>
 
-              <CommentList socket={socket} postComments={postComments} />
+              <CommentList socket={socket} postComments={feed.comments} />
             </DialogContent>
           </Box>
         </Box>

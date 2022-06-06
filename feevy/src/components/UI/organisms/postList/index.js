@@ -1,6 +1,6 @@
 import style from "./style.module.css"
 
-import React, { useState, memo } from 'react'
+import React, { useState, useEffect, memo } from 'react'
 import { Link } from "react-router-dom"
 
 import Feed from "../feed"
@@ -23,6 +23,10 @@ function PostList(props) {
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
+
+  useEffect(function () {
+    console.log("running posList effect")
+  }, [feeds]);
   
   let content = loading ? (
       <CircularProgress />
