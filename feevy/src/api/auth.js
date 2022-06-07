@@ -7,7 +7,7 @@ export async function saveUser(userObj){
         headers: {'Content-type': "application/json"},
         body: JSON.stringify(userObj)
     })
-    console.log("mssg: ", response.status);
+    // console.log("mssg: ", response.status);
     let data = await response.json()
     return data;
 

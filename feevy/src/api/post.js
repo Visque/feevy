@@ -2,7 +2,7 @@ const url = "http://localhost:5000/post";
 
 export async function savePost(userPost){
 
-    console.log("logging: ", userPost)
+    // console.log("logging: ", userPost)
 
 
     let response = await fetch(`${url}`, {
@@ -11,7 +11,7 @@ export async function savePost(userPost){
         body: JSON.stringify(userPost)
     })
     if(response.status == 200){
-        console.log("yay its 200 :)")
+        // console.log("yay its 200 :)")
         return response.json()
     }
 

@@ -24,7 +24,7 @@ function App() {
   const [socket, setSocket] = useState(null);
 
   useEffect(function () {
-    console.log("runing auth effect");
+    // console.log("runing auth effect");
     setAuth();
   }, []);
 

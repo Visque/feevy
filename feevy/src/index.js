@@ -7,7 +7,7 @@ import { BrowserRouter } from "react-router-dom";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
-console.log("index called")
+// console.log("index called")
 
 root.render(
     <BrowserRouter>

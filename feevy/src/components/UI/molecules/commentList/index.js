@@ -12,6 +12,8 @@ function CommentList(props) {
         sx={{
           display: "flex",
           flexDirection: "column",
+          height: "500px",
+          overflowY: "auto",
         }}
       >
         {postComments.length != 0 ? (

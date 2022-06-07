@@ -37,7 +37,7 @@ function CreatePostBtn(props) {
   };
 
   const handlePostSubmit = async () => {
-    console.log("post saved");
+    // console.log("post saved");
     let userPost = {
       title: postTitle,
       description: postDesc,

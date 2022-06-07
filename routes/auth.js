@@ -15,9 +15,9 @@ app.route("/user").post(async (req, res) => {
 
   // Check for if user already exists :)
   let check = await checkUser({ userName: userObj.userName });
-  console.log("check: ", check);
+  // console.log("check: ", check);
   if (check.length) {
-    console.log("user already exists :)");
+    // console.log("user already exists :)");
     res.status(400).json({ err: "user already exists" });
     return;
   }
@@ -31,7 +31,6 @@ app.route("/signin").post(async (req, res) => {
   let userObj = req.body;
   let trueUser = await checkUser(userObj);
 
-  console.log("check serv: ", trueUser);
   if (!trueUser.length) {
     res.status(400).json({ err: "Wrong Credentials" });
     return;

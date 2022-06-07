@@ -17,11 +17,11 @@ io.on("connection", (socket) => {
     
     socket.on("join room", (feedId) => {
       socket.join(`feed-${feedId}`);
-      console.log(`joined  feed-${feedId} ::::: `, socket.rooms);
+      // console.log(`joined  feed-${feedId} ::::: `, socket.rooms);
     });
 
     socket.on("leave room", (feedId) => {
-      console.log(`left  ${feedId}`);
+      // console.log(`left  ${feedId}`);
       socket.leave(`feed-${feedId}`);
     });
 
@@ -44,12 +44,15 @@ app.route("/").post(async (req, res) => {
 .get(async (req, res) => {
     // console.log("quers: ", req.query)
     let userId = req.query.userId
+    let pageNumber = req.query.pageNumber
+    let fpp = 10                            //    Feeds/Page
     userId = mongoose.Types.ObjectId(userId)
     
     // let feeds = await userFeedPosts(userId)
-    let feeds = await allFeeds()
-
+    let feeds = await allFeeds(pageNumber, fpp)
+    
     feeds = await handleGetComments(feeds)
+    // console.log("feedsd: ", pageNumber, feeds)
     
     res.status(200).json({mssg: "Retrieved user Feeds", feeds: JSON.stringify(feeds)})
 })
@@ -112,13 +115,19 @@ async function getPostComments(feedId) {
   // return await commentModel.find({ feedId: feedId });
 }
 
-async function allFeeds(){
+async function allFeeds(pageNumber, fpp){
     return await postModel.aggregate([
       {
         $sort: {
           createdAt: -1,
         },
       },
+      {
+        $skip: pageNumber * fpp
+      },
+      {
+        $limit: fpp,
+      }
     ]);
 }
 module.exports = app;

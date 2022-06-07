@@ -24,7 +24,7 @@ function MenuAppBar(props) {
   async function onLogout(event) {
     let data = await signout(user);
 
-    console.log("data: ", data);
+    // console.log("data: ", data);
     setAuth();
   }
 

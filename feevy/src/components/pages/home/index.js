@@ -1,4 +1,4 @@
-import React, { memo, useState, useEffect } from "react";
+import React, { memo, useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 import style from "./style.module.css";
@@ -8,6 +8,7 @@ import CreatePostBtn from "../../UI/organisms/createPostBtn";
 import HomeTemp from "../../templates/home"; // template
 
 import { getPosts } from "../../../api/post";
+import useGetPosts from "../../useGetPosts.js";
 
 import io from "socket.io-client";
 const socket = io.connect("http://localhost:5000");
@@ -19,44 +20,36 @@ function Home(props) {
 
   const { user } = props;
 
-  const [postsLoading, setPostsLoading] = useState(true);
-  const [allPosts, setAllPosts] = useState([]);
-
-  useEffect(
-    function () {
-      socket.on("new post", addPost);
-    },
-    [allPosts]
+  const observer = useRef();
+  
+  const [pageNumber, setPageNumber] = useState(0);
+  
+  const { allPosts, postsLoading, morePosts } = useGetPosts(
+    user,
+    pageNumber,
+    socket
   );
 
-  useEffect(function () {
-    async function fetchPosts() {
-      console.log("getting posts :)");
-      let data = await getPosts(user.userId);
-      if (data.mssg) {
-        let userFeed = JSON.parse(data.feeds);
-        console.log("feeds: ", userFeed);
-        setPostsLoading(false);
-        setAllPosts(userFeed);
-      }
-    }
-    fetchPosts();
-    navigate("/home");
-  }, []);
-
-  
-
-  const addPost = (post) => {
-    console.log("yay adding a post: ", post, " \n 0_0 \n", allPosts[0]);
-    post.comments = []
-    setAllPosts([post, ...allPosts]);
-  };
+  const lastFeedRef = useCallback(
+    (lastFeed) => {
+      if (postsLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && morePosts) {
+          setPageNumber(pageNumber + 1);
+        }
+      });
+      if (lastFeed) observer.current.observe(lastFeed);
+    },
+    [postsLoading, morePosts]
+  );
 
   return (
     <>
       <HomeTemp>
         <CreatePostBtn socket={socket} user={user} />
         <PostList
+          lastFeedRef={lastFeedRef}
           socket={socket}
           user={user}
           loading={postsLoading}

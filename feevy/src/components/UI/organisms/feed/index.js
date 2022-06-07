@@ -30,9 +30,9 @@ import io from "socket.io-client";
 import { set } from "mongoose";
 
 function Feed(props) {
-  console.log("running feed")
+  // console.log("running feed")
 
-  const { user, feed, socket } = props;
+  const { user, feed, socket, lastFeedRef } = props;
 
   const [open, setOpen] = React.useState(false);
 
@@ -69,7 +69,7 @@ function Feed(props) {
 
   useEffect(
     function () {
-      console.log("running use effect for new comment");
+      // console.log("running use effect for new comment");
       socket.on("new comment", addComment);
       socket.emit("join room", feed._id);
     },
@@ -78,7 +78,7 @@ function Feed(props) {
 
   const addComment = (comment) => {
     if (comment.feedId == feed._id) {
-      console.log("Adding a comment through socket: ", comment);
+      console.log("Adding a COMMENT through socket: ", comment);
       feed.comments = [comment, ...(feed.comments)]
       setPostComments([comment, ...postComments]);
     }
@@ -119,6 +119,7 @@ function Feed(props) {
   return (
     <>
       <ListItemButton
+        ref={lastFeedRef}
         selected={props.selected}
         onClick={(event) => handleListItemClick(event)}
       >
@@ -128,15 +129,22 @@ function Feed(props) {
         <ListItemText primary={feed.title} />
       </ListItemButton>
       <Divider />
-      <Dialog open={open} onClose={handleClose} maxWidth="100px" sx={{
-        overflowY: "auto"
-      }}>
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        maxWidth="100px"
+        sx={{
+          overflowY: "hidden",
+        }}
+      >
         <DialogTitle>POST</DialogTitle>
         <Box
           sx={{
             display: "flex",
+            minWidth: "900px",
             minHeight: "500px",
-            maxHeight: "700px",
+            maxHeight: "500px",
+            overflow: "hidden"
           }}
         >
           <Box className="feed" style={{ width: "60%" }}>

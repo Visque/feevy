@@ -9,7 +9,7 @@ export async function saveComment(userComment) {
   });
 
   if (response.status == 200) {
-    console.log("yay its 200 :)");
+    // console.log("yay its 200 :)");
     return response.json();
   }
 
