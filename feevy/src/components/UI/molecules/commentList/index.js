@@ -14,6 +14,7 @@ function CommentList(props) {
           flexDirection: "column",
           height: "500px",
           overflowY: "auto",
+          padding: "10px 5px"
         }}
       >
         {postComments.length != 0 ? (

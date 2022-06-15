@@ -16,8 +16,7 @@ import Menu from "@mui/material/Menu";
 import { signout } from "../../../../api/auth";
 
 function MenuAppBar(props) {
-
-  const { user, setAuth } = props
+  const { user, setAuth } = props;
 
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -50,10 +49,9 @@ function MenuAppBar(props) {
             color="inherit"
             aria-label="menu"
             sx={{ mr: 2 }}
-          >
-          </IconButton>
+          ></IconButton>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Welcome {user.userName}
+            Feevy
           </Typography>
           {
             <Box>
@@ -65,7 +63,15 @@ function MenuAppBar(props) {
                 onClick={handleMenu}
                 color="inherit"
               >
-                <AccountCircle />
+                <Box sx={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  width: "75px"
+                }}>
+                  <AccountCircle />
+                  {/* <Typography variant="h6">{user.userName}</Typography> */}
+                </Box>
               </IconButton>
               <Menu
                 id="menu-appbar"
@@ -92,4 +98,4 @@ function MenuAppBar(props) {
   );
 }
 
-export default memo(MenuAppBar)
+export default memo(MenuAppBar);

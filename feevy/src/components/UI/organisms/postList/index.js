@@ -1,6 +1,12 @@
 import style from "./style.module.css";
 
-import React, { useState, memo } from "react";
+import React, {
+  memo,
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+} from "react";
 import { Link } from "react-router-dom";
 
 import Feed from "../feed";
@@ -15,25 +21,56 @@ import InboxIcon from "@mui/icons-material/Inbox";
 import DraftsIcon from "@mui/icons-material/Drafts";
 import CircularProgress from "@mui/material/CircularProgress";
 
+import useGetPosts from "../../../useGetPosts.js";
+
+import {socket} from "../../../pages/home"
+
 function PostList(props) {
   console.log("called post list: )");
 
-  const { loading, feeds, user, socket, lastFeedRef } = props;
+  const { user } = props;
   const [selectedIndex, setSelectedIndex] = useState();
+  const [pageNumber, setPageNumber] = useState(0);
+
+  const observer = useRef();
+
+  const { allPosts, postsLoading, morePosts } = useGetPosts(
+    user,
+    pageNumber,
+    socket
+  );
+
+  const lastFeedRef = useCallback(
+    (lastFeed) => {
+      if (postsLoading) return;
+      if (observer.current) observer.current.disconnect();
+      observer.current = new IntersectionObserver((entries) => {
+        if (entries[0].isIntersecting && morePosts) {
+          setPageNumber(pageNumber + 1);
+        }
+      });
+      if (lastFeed) observer.current.observe(lastFeed);
+    },
+    [postsLoading, morePosts]
+  );
+
 
   const handleListItemClick = (event, index) => {
     setSelectedIndex(index);
   };
 
 
-  let content = (
+
+  return (
     <Box
-      className="findMe"
       sx={{
         width: "100%",
         minWidth: "800px",
         height: "800px",
         overflowY: "auto",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center"
       }}
     >
       <List
@@ -41,8 +78,8 @@ function PostList(props) {
         component="nav"
         aria-label="main mailbox folders"
       >
-        {feeds.map((feed, idx) => {
-          if (feeds.length === idx + 1) {
+        {allPosts.map((feed, idx) => {
+          if (allPosts.length === idx + 1) {
             return (
               <Feed
                 lastFeedRef={lastFeedRef}
@@ -68,13 +105,11 @@ function PostList(props) {
           }
         })}
       </List>
-      <Box>
-        {loading && <CircularProgress />}
-      </Box>
+      <Box sx={{
+        margin: "10px 0"
+      }}>{postsLoading && <CircularProgress />}</Box>
     </Box>
   );
-
-  return <>{content}</>;
 }
 
 export default memo(PostList);

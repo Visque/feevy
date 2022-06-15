@@ -15,6 +15,7 @@ function SigninMolecule(props) {
         margin="normal"
         label="UserName"
         variant="outlined"
+        value={props.userName}
       />
       <TextField
         onChange={props.onUserPassChange}
@@ -22,6 +23,7 @@ function SigninMolecule(props) {
         label="Password"
         variant="outlined"
         type="password"
+        value={props.userPass}
       />
       <LoadingButton
         margin="normal"

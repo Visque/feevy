@@ -1,13 +1,14 @@
 import React, { memo } from 'react'
+import { Box } from '@mui/material'
 
 import styles from "./style.module.css"
 
 function Message(props) {
   return (
     <>
-        <div className={`${styles.container} ${props.variant} flex`} >
+        <Box className={`${styles.container} ${props.variant} flex`} >
           {props.mssg}
-        </div>
+        </Box>
     </>
   )
 }

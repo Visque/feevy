@@ -50,6 +50,13 @@ app.route("/").post(async (req, res) => {
     
     // let feeds = await userFeedPosts(userId)
     let feeds = await allFeeds(pageNumber, fpp)
+
+    feeds = feeds.map((feed) => {
+      if (feed.createdBy) {
+        feed.createdBy = feed.createdBy[0];
+      }
+      return feed;
+    });
     
     feeds = await handleGetComments(feeds)
     // console.log("feedsd: ", pageNumber, feeds)
@@ -123,11 +130,19 @@ async function allFeeds(pageNumber, fpp){
         },
       },
       {
-        $skip: pageNumber * fpp
+        $skip: pageNumber * fpp,
       },
       {
         $limit: fpp,
-      }
+      },
+      {
+        $lookup: {
+          from: "users",
+          localField: "createdBy",
+          foreignField: "_id",
+          as: "createdBy",
+        },
+      },
     ]);
 }
 module.exports = app;

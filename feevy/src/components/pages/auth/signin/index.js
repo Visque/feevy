@@ -78,6 +78,8 @@ function SigninCard(props) {
         )}
 
         <SigninMolecule
+          userName={userName}
+          userPass={userPass}
           onUserNameChange={onUserNameChange}
           onUserPassChange={onUserPassChange}
           onSubmit={onsubmit}

@@ -39,14 +39,7 @@ function Feed(props) {
   const [commentSendLoading, setCommentSendLoading] = useState(false);
   const [currComment, setCurrComment] = useState("");
 
-  const [postComments, setPostComments] = useState(feed.comments || [])
-
-  // console.log("hello: ", postComments);
-
-
-  // if(feed.title == "post15"){
-  //   console.log("new post: ", postComments)
-  // }
+  const [postComments, setPostComments] = useState(feed.comments || []);
 
   // async function fetchComments() {
   //   //
@@ -60,7 +53,6 @@ function Feed(props) {
   //   function () {
   //     // fetchComments();
   //     // console.log("running use effect");
-      
 
   //     // Join feed room after all comments are loaded to the UI
   //   },
@@ -79,7 +71,7 @@ function Feed(props) {
   const addComment = (comment) => {
     if (comment.feedId == feed._id) {
       console.log("Adding a COMMENT through socket: ", comment);
-      feed.comments = [comment, ...(feed.comments)]
+      feed.comments = [comment, ...feed.comments];
       setPostComments([comment, ...postComments]);
     }
   };
@@ -122,11 +114,29 @@ function Feed(props) {
         ref={lastFeedRef}
         selected={props.selected}
         onClick={(event) => handleListItemClick(event)}
+        sx={{
+          height: "80px",
+        }}
       >
         <ListItemIcon>
           <DraftsIcon />
         </ListItemIcon>
-        <ListItemText primary={feed.title} />
+        <ListItemText
+          primary={
+            <Box
+              className="flex"
+              maxWidth={"100%"}
+              sx={{
+                justifyContent: "space-between",
+              }}
+            >
+              <Typography variant="subtitle1">{feed.title}</Typography>
+              <Typography variant="subtitle2">
+                By: {feed.createdBy.userName}
+              </Typography>
+            </Box>
+          }
+        />
       </ListItemButton>
       <Divider />
       <Dialog
@@ -144,7 +154,7 @@ function Feed(props) {
             minWidth: "900px",
             minHeight: "500px",
             maxHeight: "500px",
-            overflow: "hidden"
+            overflow: "hidden",
           }}
         >
           <Box className="feed" style={{ width: "60%" }}>

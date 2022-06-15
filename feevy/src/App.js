@@ -5,13 +5,11 @@ import React, { useState, useEffect, memo } from "react";
 import { Route, Routes } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 
-import MiniDrawer from "./components/UI/organisms/drawer";
 
 import Auth from "./components/pages/auth/index.js";
 import Home from "./components/pages/home";
 import NavBar from "./components/UI/organisms/navBar"
 
-import io from "socket.io-client";
 import { Box } from "@mui/material";
 
 let user = {};
